@@ -82,37 +82,8 @@ module.exports = function (grunt) {
                 dest: '<%= jsDir %><%= jsFilename %>.min.js'
             }
         },
-        jshint: {
-            // TODO
-            // Configure as needed
-            options: {
-                node: true,
-                curly: true,
-                eqeqeq: true,
-                immed: true,
-                latedef: true,
-                newcap: true,
-                noarg: true,
-                sub: true,
-                undef: true,
-                unused: true,
-                boss: true,
-                eqnull: true,
-                browser: true,
-                globals: {}
-            },
-            gruntfile: {
-                src: 'gruntfile.js'
-            }
-        },
         watch: {
             options: { nospawn: true },
-            gruntfile: {
-                files: '<%= jshint.gruntfile.src %>',
-                tasks: [
-                    'jshint:gruntfile'
-                ]
-            },
             env: {
                 // environment files, markup pages, etc.
                 files: [
@@ -141,7 +112,6 @@ module.exports = function (grunt) {
 
     // prep files for production
     grunt.registerTask('build', [
-        'jshint',
         'concat:production',
         'uglify:production',
         'sass:production'

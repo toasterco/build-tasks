@@ -29,4 +29,4 @@ Run when editing/developing locally. If you like to see your changes update in r
 
 #### ```$ grunt build```
 
-[JSHint](http://jshint.com/docs/) is run before any compilation is done – please check your terminal for any warnings. All Javascript is concatenated into a single file after which they are compressed and minifed. All SASS components are minified into a single-line file.
+All Javascript is concatenated into a single file after which they are compressed and minifed. All SASS components are minified into a single-line file.
