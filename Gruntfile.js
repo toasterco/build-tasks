@@ -7,16 +7,13 @@ module.exports = function (grunt) {
     // Project configuration
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-
-        // Project-specific meta
         meta: {
-            name: 'Test Project',
+            name: '',
             version: '0.1.0',
-            homepage: 'http://toasterltd.com',
-            author: 'Toaster Ltd', // Should seldom change
+            homepage: '', // project website
+            author: 'Toaster Ltd',
             licence: 'Licensed MIT'
         },
-
         // File locations
         baseDir: 'test/',
         srcDir: '<%= baseDir %>',
@@ -32,7 +29,7 @@ module.exports = function (grunt) {
             '<%= meta.author %>; <%= meta.licence %> */\n',
 
 
-        // Task configuration
+        // Task configurations
         sass: {
             options: {
                 banner: '<%= banner %>',
@@ -82,7 +79,7 @@ module.exports = function (grunt) {
             },
             production: {
                 src: '<%= concat.production.dest %>',
-                dest: '<%= jsDir %>main.min.js'
+                dest: '<%= jsDir %><%= jsFilename %>.min.js'
             }
         },
         jshint: {
