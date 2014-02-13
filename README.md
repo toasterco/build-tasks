@@ -17,16 +17,22 @@ Once the process has finished, please modify the file location settings and upda
 
 ## Running the Tasks
 
+If you need to list the available tasks, please run the following:
+
+```bash
+$ grunt --help
+```
+
 Please make sure the asset file locations are correctly set in `Gruntfile.js` before running these:
 
-### Developing Locally
+### ```$ grunt```
 
-#### ```$ grunt```
+Run when editing/developing locally. If you like to see your changes update in real-time in the browser, please install the [LiveReload Chrome Extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei). Sass, markdown and src files will auto-compile as changes are made.
 
-Run when editing/developing locally. If you like to see your changes update in real-time in the browser, please install the [LiveRealod Chrome Extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei). Sass, markdown and src files will auto-compile as changes are made.
+### ```$ grunt build[:dev|:dist]```
 
-### Developing for Deployment
+The build task can be run with an optional subtask of either `dist` (default) or `dev`.
 
-#### ```$ grunt build```
+Building with the `:dev` flag will compile all specified Javascript files with 'pretty-print' formatting, no obfuscation and the debugging flag turned on. Ideally used for staging/debugging. SASS files are compiled and **expanded**.
 
-All Javascript is concatenated into a single file after which they are compressed and minifed. All SASS components are minified into a single-line file.
+The `:dist` option applies maximum compression and obfuscation to Javascript files, usually for deployment only. SASS files are compiled and **compressed** into a single-line file.
