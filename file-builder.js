@@ -288,6 +288,53 @@ function copy(src, dest, item) {
     }
 }
 
+
+function copyJs (selectedVersion, compressed) {
+
+    grunt.log.writeln('\nCopying Javascript...');
+
+    var minifiedOutputPath = path.resolve(config.buildBaseDir, selectedVersion, 'js', 'app.min.js'),
+        externsPath = path.resolve(config.buildSrcDir, 'js/lib/externs.js'),
+        libs = [],
+        js_dir = path.resolve(config.buildSrcDir, 'js/app'),
+        js_app_dir = path.resolve(config.buildSrcDir, 'js/app'),
+        js_lib_dir = path.resolve(config.buildSrcDir,'js/lib');
+
+    if (compressed) {
+        var externalTxt = '';
+
+        libs.forEach(function(lib) {
+            var contents = getFileContents(path.resolve(js_lib_dir, lib));
+            externalTxt += contents + '\n \n';
+        });
+
+        fs.mkdirSync(path.dirname(minifiedOutputPath));
+            // execSync(command, function(error, stdout, stderr) {
+                var minified = getFileContents(minifiedOutputPath),
+                everythingTogether = externalTxt + '\n' + minified;
+                writeFile(minifiedOutputPath, everythingTogether);
+        // });
+    } else {
+
+        libs.push('closure/third_party/closure/goog/dojo/dom/query.js');
+
+        var filesToCopy = [];
+        libs.forEach(function(item) {
+            filesToCopy.push('lib/' + item);
+        });
+
+        filesToCopy.push('app');
+        filesToCopy.push('lib/closure/closure/goog');
+
+        filesToCopy.forEach(function(item) {
+        copy(path.resolve(config.buildSrcDir, 'js'), path.resolve(config.buildBaseDir, selectedVersion, 'js'), item);
+            // output.complete('Copied '+item);
+        });
+    }
+
+}
+
+
 function main(args) {
 
     // defaults
@@ -310,24 +357,22 @@ function main(args) {
 
     resetExistingBuild(selectedVersion);
 
-    copyImages(selectedVersion, compress);
+    copyImages(selectedVersion);
 
     processHTML(selectedVersion, config.versions[selectedVersion], compress);
 
+    copyJs(selectedVersion, compress)
+
     // TODO
-    // generateCSS(selectedVersion, versions[selectedVersion], compress, function() {
-    //     generateJS(selectedVersion, versions[selectedVersion], compress, function() {
-    //         generateYaml(selectedVersion, versions[selectedVersion], publicVersion);
+    // generateYaml(selectedVersion, versions[selectedVersion], publicVersion);
 
-    //         // copyBuildToProduction(selectedVersion, publicVersion);
+    // // copyBuildToProduction(selectedVersion, publicVersion);
 
-    //         if (deployToRemote) {
-    //             // output.start('Deploying to '+ selectedVersion);
-    //             deploy.deploy(path.resolve(buildBaseDir, selectedVersion), versions[selectedVersion].appengineappid, 'Deploying to ' + selectedVersion);
-    //         } else {
-    //             output.complete('Build Complete');
-    //         }
-    //     });
-    // });
+    // if (deployToRemote) {
+    //     // output.start('Deploying to '+ selectedVersion);
+    //     deploy.deploy(path.resolve(buildBaseDir, selectedVersion), versions[selectedVersion].appengineappid, 'Deploying to ' + selectedVersion);
+    // } else {
+    //     output.complete('Build Complete');
+    // }
 
 }
