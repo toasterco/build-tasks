@@ -1,4 +1,4 @@
-module.exports = {
+var config = {
 
     baseDir: 'test/', // The root directory of the application
 
@@ -39,3 +39,9 @@ module.exports = {
     ]
 
 };
+
+config.buildBaseDir = config.baseDir + 'build/';
+config.buildSrcDir = config.baseDir + 'src/'
+config.baseTemplateIn = config.buildSrcDir + config.baseTemplateInFilename;
+
+module.exports = config;
