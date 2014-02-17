@@ -29,10 +29,14 @@ Please make sure you have correctly set up the project settings and file locatio
 
 Run when editing/developing locally. If you like to see your changes update in real-time in the browser, please install the [LiveReload Chrome Extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei). Sass, markdown and src files will auto-compile as changes are made.
 
-### ```$ grunt build[:dev|:dist]```
+### ```$ grunt build[:staging|:production]```
 
-The build task can be run with an optional subtask of either `dist` (default) or `dev`.
+The build task can be run with an optional subtask of either `:production` (default) or `:staging`.
 
-Building with the `:dev` flag will compile all specified Javascript files with 'pretty-print' formatting, no obfuscation and the debugging flag turned on. Ideally used for staging/debugging. SASS files are compiled and **expanded**.
+Building with the `:staging` flag will compile all specified Javascript files with 'pretty-print' formatting, no obfuscation and the debugging flag turned on. Ideally used for staging/debugging. SASS files are compiled and **expanded**.
 
-The `:dist` option applies maximum compression and obfuscation to Javascript files, usually for deployment only. SASS files are compiled and **compressed** into a single-line file. A manifest file is also produced, listing all required Closure and custom modules.
+The `:production` option applies maximum compression and obfuscation to Javascript files, usually for deployment only. SASS files are compiled and **compressed** into a single-line file. A manifest file is also produced, listing all required Closure and custom modules.
+
+### ```$ grunt deploy[:staging|:production]```
+
+Deploys the site to the specified locations defined in `/config.js`.

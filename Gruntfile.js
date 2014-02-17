@@ -5,7 +5,8 @@ module.exports = function (grunt) {
     var config = require('./config');
 
     var fileBuilder = require('./file-builder');
-    var fileBuilder = require('./deploy');
+    var deploy = require('./deploy');
+    var encodeimages = require('./encodeimages');
 
     // Might need this
     // https://github.com/gruntjs/grunt/issues/1047
@@ -55,7 +56,7 @@ module.exports = function (grunt) {
                 banner: '<%= banner %>',
                 noCache: true
             },
-            dev: {
+            staging: {
                 options: {
                     style: 'expanded',
                     trace: true
@@ -64,7 +65,7 @@ module.exports = function (grunt) {
                     '<%= cssDir %><%= cssFilename %>': '<%= cssDir %>sass/main.scss'
                 }
             },
-            dist: {
+            production: {
                 options: {
                     style: 'compressed',
                     trace: false
@@ -107,7 +108,7 @@ module.exports = function (grunt) {
                     maxBuffer: 999999 * 1024
                 }
             },
-            dev: {
+            staging: {
                 options: {
                     compilerOpts: {
                         compilation_level: 'SIMPLE_OPTIMIZATIONS',
@@ -126,7 +127,7 @@ module.exports = function (grunt) {
                 // If not set, will output to stdout
                 dest: '<%= jsDir %><%= jsFilename %>'
             },
-            dist: {
+            production: {
                 options: {
                     compilerOpts: {
                         summary_detail_level: 0,
@@ -167,7 +168,7 @@ module.exports = function (grunt) {
                 options: { livereload: true },
                 tasks: [
                     // 'notify:sass',
-                    'sass:dev'
+                    'sass:staging'
                 ]
             }
         }
@@ -195,11 +196,15 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.registerTask('encodeImages', '[custom] Recursively encode on or more directories of images to webp', function () {
+        encodeimages.webp(config.src.imgDir);
+    });
+
     grunt.registerTask('default', '[custom] Use for developing locally. Watched files are compiled as changes are made.', [
         'watch'
     ]);
 
-    grunt.registerTask('build', '[custom] Building all the things, either for staging/development [:dev] or production [:dist]', function (subtask) {
+    grunt.registerTask('build', '[custom] Building all the things, either for staging/development [:staging] or production [:production]', function (subtask) {
         subtask = subtask || 'dist';
         grunt.task.run([
             'closureBuilder:' + subtask,
