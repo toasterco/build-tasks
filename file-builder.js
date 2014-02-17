@@ -406,6 +406,7 @@ function main(args) {
     grunt.log.writeflags(args);
     grunt.log.writeln();
 
+
     resetExistingBuild(selectedVersion);
 
     processHTML(selectedVersion, config.versions[selectedVersion], compress);
@@ -414,8 +415,10 @@ function main(args) {
     copyJs(selectedVersion, compress);
     copyCss(selectedVersion);
 
-    generateYaml(selectedVersion, config.versions[selectedVersion], publicVersion);
+    // generateYaml(selectedVersion, config.versions[selectedVersion], publicVersion);
 
     grunt.log.ok('\nBuild Complete!');
 
 }
+
+module.exports = main;

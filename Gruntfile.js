@@ -176,14 +176,14 @@ module.exports = function (grunt) {
 
     grunt.registerTask('fileBuilder', '[custom] Produce build for either staging or production', function(subtask) {
         switch (subtask) {
-            case 'dev':
+            case 'staging':
                 fileBuilder({
                     version: 'staging',
                     compress: false,
                     public: false
                 });
                 break;
-            case 'dist':
+            case 'production':
                 fileBuilder({
                     version: 'production',
                     compress: true,
@@ -207,12 +207,12 @@ module.exports = function (grunt) {
     grunt.registerTask('build', '[custom] Building all the things, either for staging/development [:staging] or production [:production]', function (subtask) {
         subtask = subtask || 'dist';
         grunt.task.run([
-            'closureBuilder:' + subtask,
-            'sass:' + subtask,
+            // 'closureBuilder:' + subtask,
+            // 'sass:' + subtask,
             'fileBuilder:' + subtask
         ]);
         // build the manifest file
-        if (subtask == 'dist') grunt.task.run('closureBuilder:list');
+        if (subtask == 'production') grunt.task.run('closureBuilder:list');
     });
 
     grunt.registerTask('deploy', "[custom] Deploy to App Engine, specifying either [:staging] or [:production]", function (subtask) {

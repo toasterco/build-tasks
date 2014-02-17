@@ -66,6 +66,7 @@ config.src.cssDir = config.src.dir + 'css/';
 config.src.cssFilename = 'styles.css';
 config.src.jsDir = config.src.dir + 'js/';
 config.src.jsFilename = 'app.min.js'; // Name of the compiled javascript
+config.src.imgDir = config.src.dir + 'img/';
 
 config.versions.staging.appengineappid = 'google.com:yourapp-staging';
 config.versions.staging.analyticsAccount = 'UA-123456-1';
