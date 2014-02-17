@@ -23,7 +23,7 @@ If you need to list the available tasks, please run the following:
 $ grunt --help
 ```
 
-Please make sure the asset file locations are correctly set in `Gruntfile.js` before running these:
+Please make sure you have correctly set up the project settings and file locations in `config.js` before running these:
 
 ### ```$ grunt```
 
