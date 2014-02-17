@@ -45,8 +45,11 @@ var config = {
     	jsDir: '',
     	jsFilename: ''
     },
+    jsExterns: '',
     namespaces: [],
-    imagesToCopy: []
+    imagesToCopy: [],
+    yamlFilename: '',
+    pyScripts: []
 
 };
 
@@ -64,20 +67,31 @@ config.src.cssFilename = 'styles.css';
 config.src.jsDir = config.src.dir + 'js/';
 config.src.jsFilename = 'app.min.js'; // Name of the compiled javascript
 
-config.versions.staging.appengineappid = 'google.com:privacyweek-staging';
+config.versions.staging.appengineappid = 'google.com:yourapp-staging';
 config.versions.staging.analyticsAccount = 'UA-123456-1';
 
-config.versions.production.appengineappid = 'google.com:privacyweek';
+config.versions.production.appengineappid = 'google.com:yourapp';
 config.versions.production.analyticsAccount = 'UA-123456-2';
 
-config.jsExterns = 'lib/externs.js';
+config.jsExterns = 'lib/externs.js'; // external javascript code
+
 // Namespaces (or the provided module name in your app.js file)
 config.namespaces = [
 	'pw.app.Application'
 ];
-config.imagesToCopy = [ // Array of files or directories to include when copying
-    'img',
-    'favicon.ico'
+
+// Array of files or directories to include when copying
+config.imagesToCopy = [
+    'img'
+];
+
+// Python scripts to include when generating Yaml
+config.yamlFilename = 'app.yaml';
+config.pyScripts = [
+	'main',
+    'manage',
+    'helpers',
+    'models'
 ];
 
 module.exports = config;

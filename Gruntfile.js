@@ -205,12 +205,12 @@ module.exports = function (grunt) {
     grunt.registerTask('build', '[custom] Building all the things, either for development [dev] or distribution [dist]', function (subtask) {
         subtask = subtask || 'dist';
         grunt.task.run([
-            'closureBuilder:' + subtask,
-            'sass:' + subtask,
+            // 'closureBuilder:' + subtask,
+            // 'sass:' + subtask,
             'fileBuilder:' + subtask
         ]);
         // build the manifest file
-        if (subtask == 'dist') grunt.task.run('closureBuilder:list');
+        // if (subtask == 'dist') grunt.task.run('closureBuilder:list');
     });
 
 };

@@ -317,20 +317,21 @@ function generateYaml(versionKey, versionVars, isPublic) {
 
     grunt.log.writeln('\nGenerating Yaml...');
 
-    var yamlPath = 'app.yaml';
-    var pyScripts = ['main', 'manage', 'helpers', 'models'];
-    var baseInputDir = path.resolve(srcBaseDir);
-    var baseOutputDir = path.resolve(buildBaseDir, versionKey);
+    var yamlPath = config.yamlFilename;
+    var pyScripts = config.pyScripts;
+    var baseInputDir = config.src.dir;
+    var baseOutputDir = path.resolve(config.build.dir, versionKey);
     var yamlContents = getFileContents(path.resolve(baseInputDir, yamlPath));
 
     // Replace appengine id and version in yaml before writing.
     yamlContents = yamlContents.replace('appengineappid', versionVars.appengineappid);
     yamlContents = yamlContents.replace('versionId', versionVars.versionId);
+
     writeFile(path.resolve(baseOutputDir, yamlPath), yamlContents);
 
     // copy py scripts over to build dir.
     pyScripts.forEach(function(script) {
-    copy(path.resolve(baseInputDir), baseOutputDir, script + '.py');
+        copy(path.resolve(baseInputDir), baseOutputDir, script + '.py');
     });
 
 }
@@ -424,7 +425,7 @@ function main(args) {
     copyJs(selectedVersion, compress);
     copyCss(selectedVersion);
 
-    // generateYaml(selectedVersion, config.versions[selectedVersion], publicVersion);
+    generateYaml(selectedVersion, config.versions[selectedVersion], publicVersion);
 
     // TODO
     // // copyBuildToProduction(selectedVersion, publicVersion);

@@ -35,4 +35,4 @@ The build task can be run with an optional subtask of either `dist` (default) or
 
 Building with the `:dev` flag will compile all specified Javascript files with 'pretty-print' formatting, no obfuscation and the debugging flag turned on. Ideally used for staging/debugging. SASS files are compiled and **expanded**.
 
-The `:dist` option applies maximum compression and obfuscation to Javascript files, usually for deployment only. SASS files are compiled and **compressed** into a single-line file.
+The `:dist` option applies maximum compression and obfuscation to Javascript files, usually for deployment only. SASS files are compiled and **compressed** into a single-line file. A manifest file is also produced, listing all required Closure and custom modules.
