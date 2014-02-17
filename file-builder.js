@@ -1,11 +1,11 @@
 // Node modules
-var fs = require('fs'),
-    sys = require('sys'),
-    path = require('path'),
-    htmlMinifier = require('html-minifier'),
+var fs = require('fs');
+var sys = require('sys');
+var path = require('path');
+var htmlMinifier = require('html-minifier');
 
-    grunt = require('grunt'),
-    config = require('./config');
+var grunt = require('grunt');
+var config = require('./config');
 
 module.exports = main;
 
@@ -28,7 +28,8 @@ function processHTML(versionKey, versionVars, compressed) {
 
     grunt.log.writeln('Generating HTML...');
 
-    var baseFile = processFile(config.baseTemplateIn, compressed, versionVars.analyticsAccount);
+    var baseFile = processFile(config.src.template, compressed, versionVars.analyticsAccount);
+    var outputLocation = path.resolve(config.build.dir, versionKey, path.basename(config.build.template));
 
     if (compressed) {
         baseFile = htmlMinifier.minify(baseFile, {
@@ -38,17 +39,17 @@ function processHTML(versionKey, versionVars, compressed) {
         grunt.log.ok('HTML Minified');
     }
 
-    writeFile(path.resolve(config.buildBaseDir + versionKey + '/' + config.baseTemplateOutFilename), baseFile);
-    grunt.log.ok('HTML created in '+ config.buildBaseDir + versionKey + '/' + config.baseTemplateOutFilename);
+    writeFile(outputLocation, baseFile);
+    grunt.log.ok('HTML created in '+ outputLocation);
 }
 
 function processFile (file, compressed, analyticsAccount) {
 
     compressed = compressed || false;
 
-    var fileContents = getFileContents(path.resolve(file)),
-        processedTags = processCompressedTags(fileContents, compressed),
-        replacedAnalytics = replaceAnalyticsCode(processedTags, analyticsAccount);
+    var fileContents = getFileContents(path.resolve(file));
+    var processedTags = processCompressedTags(fileContents, compressed);
+    var replacedAnalytics = replaceAnalyticsCode(processedTags, analyticsAccount);
 
     return addFileVersionDate(replacedAnalytics);
 };
@@ -135,8 +136,8 @@ function replaceAnalyticsCode(fileContents, analyticsAccount) {
  */
 function resetExistingBuild(selectedVersion) {
     // Build Path
-    var buildPath = path.resolve(config.buildBaseDir + selectedVersion);
-    if (!fs.existsSync(config.buildBaseDir)) fs.mkdirSync(config.buildBaseDir);
+    var buildPath = path.resolve(config.build.dir + selectedVersion);
+    if (!fs.existsSync(config.build.dir)) fs.mkdirSync(config.build.dir);
     if (fs.existsSync(buildPath)) deleteRecursive(buildPath);
     fs.mkdirSync(buildPath);
 }
@@ -177,7 +178,7 @@ function copyImages(selectedVersion) {
 
     var toCopy = config.imagesToCopy;
     toCopy.forEach(function(dir) {
-        copy(path.resolve('test/src'), config.buildBaseDir + selectedVersion, dir);
+        copy(path.resolve(config.src.dir), config.build.dir + selectedVersion, dir);
     });
 
 }
@@ -348,16 +349,16 @@ function generateYaml(versionKey, versionVars, isPublic) {
 function copyJs (selectedVersion, compressed) {
     grunt.log.writeln('\nCopying Javascript...');
 
-    var pathOutMin = path.resolve(config.buildBaseDir, selectedVersion, 'js', 'app.min.js'),
-        externsPath = path.resolve(config.buildSrcDir, 'js/lib/externs.js'),
+    var pathOutMin = path.resolve(config.build.dir, selectedVersion, 'js', config.src.jsFilename),
+        externsPath = path.resolve(config.src.jsDir, config.jsExterns),
         libs = [],
-        js_dir = path.resolve(config.buildSrcDir, 'js/app'),
-        js_app_dir = path.resolve(config.buildSrcDir, 'js/app'),
-        js_lib_dir = path.resolve(config.buildSrcDir,'js/lib');
+        js_dir = path.resolve(config.src.jsDir, 'app'),
+        js_app_dir = path.resolve(config.src.jsDir, 'app'),
+        js_lib_dir = path.resolve(config.src.jsDir, 'lib');
 
     if (compressed) {
 
-        copy(path.resolve(config.buildSrcDir, 'js'), path.dirname(pathOutMin), 'app.min.js');
+        copy(path.resolve(config.src.dir, 'js'), path.dirname(pathOutMin), config.src.jsFilename);
 
     } else {
 
@@ -372,7 +373,7 @@ function copyJs (selectedVersion, compressed) {
         filesToCopy.push('lib/closure/closure/goog');
 
         filesToCopy.forEach(function(item) {
-            copy(path.resolve(config.buildSrcDir, 'js'), path.resolve(config.buildBaseDir, selectedVersion, 'js'), item);
+            copy(path.resolve(config.src.dir, 'js'), path.resolve(config.build.dir, selectedVersion, 'js'), item);
         });
     }
 
@@ -387,10 +388,10 @@ function copyJs (selectedVersion, compressed) {
 function copyCss (selectedVersion) {
     grunt.log.writeln('\nCopying CSS...');
 
-    var pathOut = path.resolve(config.buildBaseDir, selectedVersion, 'css');
-    var pathIn = path.resolve(config.buildSrcDir, 'css');
+    var pathOut = path.resolve(config.build.dir, selectedVersion, 'css');
+    var pathIn = config.src.cssDir;
 
-    copy(pathIn, pathOut, 'styles.css');
+    copy(pathIn, pathOut, config.src.cssFilename);
 
 }
 

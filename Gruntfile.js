@@ -34,11 +34,12 @@ module.exports = function (grunt) {
 
         // File locations
         baseDir: config.baseDir,
-        srcDir: '<%= baseDir %>src/',
-        jsDir: '<%= srcDir %>js/',
-        cssDir: '<%= srcDir %>css/',
-        jsFilename: 'main',
-        cssFilename: 'styles',
+        srcDir: config.src.dir,
+        jsDir: config.src.jsDir,
+        cssDir: config.src.cssDir,
+        jsFilename: config.src.jsFilename,
+        jsExterns: config.jsExterns,
+        cssFilename: config.src.cssFilename,
 
         banner: '/*! <%= meta.name %> - v<%= meta.version %> - ' +
             '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
@@ -59,7 +60,7 @@ module.exports = function (grunt) {
                     trace: true
                 },
                 files: {
-                    '<%= cssDir %><%= cssFilename %>.css': '<%= cssDir %>sass/main.scss'
+                    '<%= cssDir %><%= cssFilename %>': '<%= cssDir %>sass/main.scss'
                 }
             },
             dist: {
@@ -68,7 +69,7 @@ module.exports = function (grunt) {
                     trace: false
                 },
                 files: {
-                    '<%= cssDir %><%= cssFilename %>.css': '<%= cssDir %>sass/main.scss'
+                    '<%= cssDir %><%= cssFilename %>': '<%= cssDir %>sass/main.scss'
                 }
             }
         },
@@ -93,7 +94,7 @@ module.exports = function (grunt) {
                 compilerOpts: {
                     compilation_level: 'ADVANCED_OPTIMIZATIONS',
                     externs: [
-                        '<%= jsDir %>lib/externs.js'
+                        '<%= jsDir %><%= jsExterns %>'
                     ],
                     warning_level: 'quiet', // verbose|quiet|default
                     summary_detail_level: 0,
@@ -122,7 +123,7 @@ module.exports = function (grunt) {
                     "<%= jsDir %>app"
                 ],
                 // If not set, will output to stdout
-                dest: '<%= jsDir %>app.min.js'
+                dest: '<%= jsDir %><%= jsFilename %>'
             },
             dist: {
                 options: {
@@ -134,7 +135,7 @@ module.exports = function (grunt) {
                     "<%= jsDir %>lib/closure",
                     "<%= jsDir %>app"
                 ],
-                dest: '<%= jsDir %>app.min.js'
+                dest: '<%= jsDir %><%= jsFilename %>'
             },
             list: {
                 options: {
@@ -205,7 +206,7 @@ module.exports = function (grunt) {
         subtask = subtask || 'dist';
         grunt.task.run([
             // 'closureBuilder:' + subtask,
-            'sass:' + subtask,
+            // 'sass:' + subtask,
             'fileBuilder:' + subtask
         ]);
     })
