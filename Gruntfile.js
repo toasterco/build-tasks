@@ -5,6 +5,7 @@ module.exports = function (grunt) {
     var config = require('./config');
 
     var fileBuilder = require('./file-builder');
+    var fileBuilder = require('./deploy');
 
     // Might need this
     // https://github.com/gruntjs/grunt/issues/1047
@@ -173,14 +174,11 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('fileBuilder', '[custom] Produce build for either staging or production', function(subtask) {
-        // TODO
-        // Export this to a node module
         switch (subtask) {
             case 'dev':
                 fileBuilder({
                     version: 'staging',
                     compress: false,
-                    // deploy: false,
                     public: false
                 });
                 break;
@@ -188,7 +186,6 @@ module.exports = function (grunt) {
                 fileBuilder({
                     version: 'production',
                     compress: true,
-                    // deploy: true,
                     public: false
                 });
                 break;
@@ -202,15 +199,20 @@ module.exports = function (grunt) {
         'watch'
     ]);
 
-    grunt.registerTask('build', '[custom] Building all the things, either for development [dev] or distribution [dist]', function (subtask) {
+    grunt.registerTask('build', '[custom] Building all the things, either for staging/development [:dev] or production [:dist]', function (subtask) {
         subtask = subtask || 'dist';
         grunt.task.run([
-            // 'closureBuilder:' + subtask,
-            // 'sass:' + subtask,
+            'closureBuilder:' + subtask,
+            'sass:' + subtask,
             'fileBuilder:' + subtask
         ]);
         // build the manifest file
-        // if (subtask == 'dist') grunt.task.run('closureBuilder:list');
+        if (subtask == 'dist') grunt.task.run('closureBuilder:list');
+    });
+
+    grunt.registerTask('deploy', "[custom] Deploy to App Engine, specifying either [:staging] or [:production]", function (subtask) {
+        subtask = subtask || 'staging';
+        deploy.deploy(path.resolve(config.build.dir, subtask), config.versions[subtask].appengineappid, 'Deploying to ' + subtask);
     });
 
 };

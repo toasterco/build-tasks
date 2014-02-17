@@ -10,12 +10,11 @@ var deploy = function(sourceFolder, remoteURL, message) {
 	// Variables --------------------------------------------------------------------------------------
 
 	// Node JS Requirements
-	var fs = require('fs');
-	var ArgumentParser = require('argparse').ArgumentParser;
+	// var fs = require('fs');
+	// var ArgumentParser = require('argparse').ArgumentParser;
 	var exec = require('child_process').exec;
 	var sys = require('sys');
-	var path = require('path');
-	var cleanCSS = require('clean-css');
+	// var path = require('path');
 	var charm = require('charm')();
 
 	// Console Commands
@@ -162,7 +161,7 @@ var deploy = function(sourceFolder, remoteURL, message) {
 		}
 	}
 
-	
+
 	/**
 	 * Stop Loading Animation
 	 */

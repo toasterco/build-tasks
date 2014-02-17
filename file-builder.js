@@ -7,15 +7,6 @@ var htmlMinifier = require('html-minifier');
 var grunt = require('grunt');
 var config = require('./config');
 
-module.exports = main;
-
-// module.exports = main;
-// used?
-// var exec = require('child_process').exec;
-// var cleanCSS = require('clean-css');
-// var deploy = require('./deploy');
-
-
 /**
  * [processHTML description]
  *
@@ -403,7 +394,6 @@ function main(args) {
     var defaultArgs = {
         version: 'staging',
         compress: false,
-        deploy: false,
         public: false
     };
 
@@ -411,7 +401,6 @@ function main(args) {
 
     var selectedVersion = args.version,
         compress = args.compress,
-        deployToRemote = args.deploy,
         publicVersion = args.public;
 
     grunt.log.writeflags(args);
@@ -427,13 +416,6 @@ function main(args) {
 
     generateYaml(selectedVersion, config.versions[selectedVersion], publicVersion);
 
-    // TODO
-    // // copyBuildToProduction(selectedVersion, publicVersion);
-
-    // if (deployToRemote) {
-    //     deploy.deploy(path.resolve(buildBaseDir, selectedVersion), versions[selectedVersion].appengineappid, 'Deploying to ' + selectedVersion);
-    // } else {
-    //     output.complete('Build Complete');
-    // }
+    grunt.log.ok('\nBuild Complete!');
 
 }
