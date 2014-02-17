@@ -205,7 +205,7 @@ module.exports = function (grunt) {
         subtask = subtask || 'dist';
         grunt.task.run([
             // 'closureBuilder:' + subtask,
-            // 'sass:' + subtask,
+            'sass:' + subtask,
             'fileBuilder:' + subtask
         ]);
     })

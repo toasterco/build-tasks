@@ -90,6 +90,13 @@ function processCompressedTags(contents, useCompression) {
     return output;
 }
 
+
+/**
+ * Adds a date-versioning to the query string of the file
+ *
+ * @param {string} fileContents
+ *
+ */
 function addFileVersionDate(fileContents) {
 
     // More XML munching
@@ -166,12 +173,13 @@ function deleteRecursive(path) {
  *
  */
 function copyImages(selectedVersion) {
+    grunt.log.writeln('\nCopying images...');
+
     var toCopy = config.imagesToCopy;
-    grunt.log.writeln('Copying images...');
     toCopy.forEach(function(dir) {
         copy(path.resolve('test/src'), config.buildBaseDir + selectedVersion, dir);
     });
-    grunt.log.writeln();
+
 }
 
 
@@ -215,7 +223,14 @@ function getFileContents(filename) {
 }
 
 
-
+/**
+ * Pad a string/numver with leading zeros
+ *
+ * @param  {string/number} v
+ * @param  {number} numChars    The number of leading zeros to pad the number by
+ * @return {str}
+ *
+ */
 function pad(v, numChars) {
     var str = v.toString();
     while(str.length < numChars) {
@@ -289,11 +304,51 @@ function copy(src, dest, item) {
 }
 
 
-function copyJs (selectedVersion, compressed) {
+/**
+ * Generate Yaml
+ *
+ * @param {String} versionKey
+ * @param {{ appengineappid, versionId}} versionVars
+ * @param {Boolean} isPublic
+ *
+ */
+function generateYaml(versionKey, versionVars, isPublic) {
 
+    grunt.log.writeln('\nGenerating Yaml...');
+
+    var yamlPath = 'app.yaml';
+    var pyScripts = ['main', 'manage', 'helpers', 'models'];
+    var baseInputDir = path.resolve(srcBaseDir);
+    var baseOutputDir = path.resolve(buildBaseDir, versionKey);
+    var yamlContents = getFileContents(path.resolve(baseInputDir, yamlPath));
+
+    // Replace appengine id and version in yaml before writing.
+    yamlContents = yamlContents.replace('appengineappid', versionVars.appengineappid);
+    yamlContents = yamlContents.replace('versionId', versionVars.versionId);
+    writeFile(path.resolve(baseOutputDir, yamlPath), yamlContents);
+
+    // copy py scripts over to build dir.
+    pyScripts.forEach(function(script) {
+    copy(path.resolve(baseInputDir), baseOutputDir, script + '.py');
+    });
+
+}
+
+
+/**
+ * Copy Javascript files
+ *
+ * If compressed, only include a single file, otherwise copy over all
+ * included modules, libs and scripts.
+ *
+ * @param  {string} selectedVersion
+ * @param  {string} compressed
+ *
+ */
+function copyJs (selectedVersion, compressed) {
     grunt.log.writeln('\nCopying Javascript...');
 
-    var minifiedOutputPath = path.resolve(config.buildBaseDir, selectedVersion, 'js', 'app.min.js'),
+    var pathOutMin = path.resolve(config.buildBaseDir, selectedVersion, 'js', 'app.min.js'),
         externsPath = path.resolve(config.buildSrcDir, 'js/lib/externs.js'),
         libs = [],
         js_dir = path.resolve(config.buildSrcDir, 'js/app'),
@@ -301,36 +356,41 @@ function copyJs (selectedVersion, compressed) {
         js_lib_dir = path.resolve(config.buildSrcDir,'js/lib');
 
     if (compressed) {
-        var externalTxt = '';
 
-        libs.forEach(function(lib) {
-            var contents = getFileContents(path.resolve(js_lib_dir, lib));
-            externalTxt += contents + '\n \n';
-        });
+        copy(path.resolve(config.buildSrcDir, 'js'), path.dirname(pathOutMin), 'app.min.js');
 
-        fs.mkdirSync(path.dirname(minifiedOutputPath));
-            // execSync(command, function(error, stdout, stderr) {
-                var minified = getFileContents(minifiedOutputPath),
-                everythingTogether = externalTxt + '\n' + minified;
-                writeFile(minifiedOutputPath, everythingTogether);
-        // });
     } else {
 
-        libs.push('closure/third_party/closure/goog/dojo/dom/query.js');
-
+        // Copy lib files
         var filesToCopy = [];
         libs.forEach(function(item) {
             filesToCopy.push('lib/' + item);
         });
 
+        // Include app & closure files
         filesToCopy.push('app');
         filesToCopy.push('lib/closure/closure/goog');
 
         filesToCopy.forEach(function(item) {
-        copy(path.resolve(config.buildSrcDir, 'js'), path.resolve(config.buildBaseDir, selectedVersion, 'js'), item);
-            // output.complete('Copied '+item);
+            copy(path.resolve(config.buildSrcDir, 'js'), path.resolve(config.buildBaseDir, selectedVersion, 'js'), item);
         });
     }
+
+}
+
+/**
+ * Copy over all CSS files
+ *
+ * @param  {string} selectedVersion
+ *
+ */
+function copyCss (selectedVersion) {
+    grunt.log.writeln('\nCopying CSS...');
+
+    var pathOut = path.resolve(config.buildBaseDir, selectedVersion, 'css');
+    var pathIn = path.resolve(config.buildSrcDir, 'css');
+
+    copy(pathIn, pathOut, 'styles.css');
 
 }
 
@@ -357,19 +417,18 @@ function main(args) {
 
     resetExistingBuild(selectedVersion);
 
-    copyImages(selectedVersion);
-
     processHTML(selectedVersion, config.versions[selectedVersion], compress);
 
-    copyJs(selectedVersion, compress)
+    copyImages(selectedVersion);
+    copyJs(selectedVersion, compress);
+    copyCss(selectedVersion);
+
+    // generateYaml(selectedVersion, config.versions[selectedVersion], publicVersion);
 
     // TODO
-    // generateYaml(selectedVersion, versions[selectedVersion], publicVersion);
-
     // // copyBuildToProduction(selectedVersion, publicVersion);
 
     // if (deployToRemote) {
-    //     // output.start('Deploying to '+ selectedVersion);
     //     deploy.deploy(path.resolve(buildBaseDir, selectedVersion), versions[selectedVersion].appengineappid, 'Deploying to ' + selectedVersion);
     // } else {
     //     output.complete('Build Complete');
