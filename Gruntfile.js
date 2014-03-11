@@ -6,19 +6,6 @@ module.exports = function (grunt) {
 
     var fileBuilder = require('./file-builder');
     var deploy = require('./deploy');
-    var encodeimages = require('./encodeimages');
-
-    // Might need this
-    // https://github.com/gruntjs/grunt/issues/1047
-    /*
-    if (!grunt.task.exists) {
-        grunt.task.exists = function exists (name) {
-            console.log(name);
-            console.log(grunt.task._taskPlusArgs[name]);
-            return !!grunt.task._tasks[name];
-        };
-    }
-    */
 
     // Load the all the plugins that Grunt requires
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
@@ -171,6 +158,40 @@ module.exports = function (grunt) {
                     'sass:staging'
                 ]
             }
+        },
+        webp: {
+            files: {
+                expand: true,
+                cwd: 'test/src/img/',
+                src: [
+                    '**/*.png',
+                    '!webp/',
+                ],
+                dest: 'test/src/img/webp'
+            },
+            options: {
+                binpath: require('webp-bin').path,
+                verbose: true,
+                lossless: true
+                // preset: 'photo',
+                // quality: 80,
+                // alphaQuality: 80,
+                // compressionMethod: 6,
+                // segments: 4,
+                // psnr: 42,
+                // sns: 50,
+                // filterStrength: 40,
+                // filterSharpness: 3,
+                // simpleFilter: true,
+                // partitionLimit: 50,
+                // analysisPass: 6,
+                // multiThreading: true,
+                // lowMemory: false,
+                // alphaMethod: 0,
+                // alphaFilter: 'best',
+                // alphaCleanup: true,
+                // noAlpha: false,
+            }
         }
     });
 
@@ -197,7 +218,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('encodeImages', '[custom] Recursively encode on or more directories of images to webp', function () {
-        encodeimages.webp(config.src.imgDir);
+        grunt.task.run(['webp']);
     });
 
     grunt.registerTask('default', '[custom] Use for developing locally. Watched files are compiled as changes are made.', [
