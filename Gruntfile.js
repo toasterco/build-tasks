@@ -26,6 +26,7 @@ module.exports = function (grunt) {
         srcDir: config.src.dir,
         jsDir: config.src.jsDir,
         cssDir: config.src.cssDir,
+        imgDir: config.src.imgDir,
         jsFilename: config.src.jsFilename,
         jsExterns: config.jsExterns,
         cssFilename: config.src.cssFilename,
@@ -162,12 +163,12 @@ module.exports = function (grunt) {
         webp: {
             files: {
                 expand: true,
-                cwd: 'test/src/img/',
+                cwd: '<%= imgDir %>',
                 src: [
                     '**/*.png',
                     '!webp/',
                 ],
-                dest: 'test/src/img/webp'
+                dest: '<%= imgDir %>webp'
             },
             options: {
                 binpath: require('webp-bin').path,
@@ -228,8 +229,8 @@ module.exports = function (grunt) {
     grunt.registerTask('build', '[custom] Building all the things, either for staging/development [:staging] or production [:production]', function (subtask) {
         subtask = subtask || 'dist';
         grunt.task.run([
-            // 'closureBuilder:' + subtask,
-            // 'sass:' + subtask,
+            'closureBuilder:' + subtask,
+            'sass:' + subtask,
             'fileBuilder:' + subtask
         ]);
         // build the manifest file

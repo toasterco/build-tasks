@@ -40,3 +40,7 @@ The `:production` option applies maximum compression and obfuscation to Javascri
 ### ```$ grunt deploy[:staging|:production]```
 
 Deploys the site to the specified locations defined in `/config.js`.
+
+### ```$ grunt [encodeImages|webp]```
+
+Running either `$ grunt webp` or `$ grunt encodeImages` Converts all `.png` images to `.webp` format.
