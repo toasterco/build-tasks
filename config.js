@@ -1,36 +1,26 @@
+
+/** -----------------------------------------------------------------------------------------------
+ * GRUNT CONFIG
+ * ----------------------------------------------------------------------------------------------*/
+
+// NodeJS requirements
 var path = require('path');
 
+/**
+ * Instantiating Config
+ * Do not change these settings
+ */
+
 var config = {
-
-	/**
-	 * Do not change these settings
-	 *
-	 */
     versions: {
-	    staging: {
-	        appengineappid: '',
-	        analyticsAccount: '',
-	        versionId: 'stage'
-	    },
-	    production: {
-	        appengineappid: '',
-	        analyticsAccount: '',
-	        versionId: 'production'
-	    }
+	    staging: { versionId: 'stage' },
+	    production: { versionId: 'production' }
 	},
-    tagCompressed: {
-        open: '<!--COMPRESSED--><!--',
-        close: '--><!--/COMPRESSED-->'
-    },
-    tagUncompressed: {
-        open: '<!--UNCOMPRESSED-->',
-        close: '<!--/UNCOMPRESSED-->'
-    },
-
+    tagCompressed: { open: '<!--COMPRESSED--><!--', close: '--><!--/COMPRESSED-->' },
+    tagUncompressed: { open: '<!--UNCOMPRESSED-->', close: '<!--/UNCOMPRESSED-->' },
 
     /**
      * Placeholders for application-specific settings
-     *
      */
     baseDir: '',
     build: {
@@ -53,6 +43,11 @@ var config = {
 
 };
 
+config.debugBuild = false;
+config.name = 'AppName';
+config.homepage = '';
+config.author = 'Toaster Ltd';
+config.licence = 'Licensed MIT';
 
 // App-specific settings
 config.baseDir = path.resolve('./test') + '/'; // The root directory of the application
@@ -82,7 +77,7 @@ config.namespaces = [
 ];
 
 // Array of files or directories to include when copying
-config.imagesToCopy = [
+config.foldersToCopy = [
     'img'
 ];
 
@@ -95,4 +90,5 @@ config.pyScripts = [
     'models'
 ];
 
+// Export Config
 module.exports = config;
