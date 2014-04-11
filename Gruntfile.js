@@ -10,15 +10,39 @@ module.exports = function (grunt) {
     // Load the all the plugins that Grunt requires
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
+    // Console Colors
+    var ccYellow = '\x1b[33m';
+    var ccWhite = '\x1b[37m';
+    var ccReset = '\x1b[0m';
+    /**
+     * Display Title
+     * ASCII art generated from http://patorjk.com/software/taag/#p=testall&f=Isometric1&t=Toaster
+     * @param {string} info
+     */
+    var displayTitle = function(info){
+        console.log(ccWhite+'----------------------------------------------------------'+ccReset);
+        console.log(ccYellow+'MMP""MM""YMM                         mm                   ');
+        console.log('P`   MM   `7                         MM                   ');
+        console.log('     MM  ,pW"Wq.   ,6"Yb.  ,pP"Ybd mmMMmm .gP"Ya `7Mb,od8 ');
+        console.log('     MM 6W`   `Wb 8)   MM  8I   `"   MM  ,M`   Yb  MM` "` ');
+        console.log('     MM 8M     M8  ,pm9MM  `YMMMa.   MM  8M""""""  MM     ');
+        console.log('     MM YA.   ,A9 8M   MM  L.   I8   MM  YM.    ,  MM     ');
+        console.log('   .JMML.`Ybmd9`  `Moo9^Yo.M9mmmP`   `Mbmo`Mbmmd`.JMML.   '+ccReset);
+        console.log(ccWhite+'----------------------------------------------------------'+ccReset);
+        console.log( info.toUpperCase() );
+        console.log('FULL LOG MODE: '+config.fullBuildLog);
+        console.log(ccWhite+'----------------------------------------------------------'+ccReset);
+    };
+
     // Project configuration
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         meta: {
-            name: '',
+            name: config.name,
             version: '0.1.0',
-            homepage: '', // project website
-            author: 'Toaster Ltd',
-            licence: 'Licensed MIT'
+            homepage: config.homepage,
+            author: config.author,
+            licence: config.licence
         },
 
         // File locations
@@ -227,7 +251,8 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build', '[custom] Building all the things, either for staging/development [:staging] or production [:production]', function (subtask) {
-        subtask = subtask || 'dist';
+        subtask = subtask || 'staging';
+        displayTitle('BUILDING - '+subtask);
         grunt.task.run([
             'closureBuilder:' + subtask,
             'sass:' + subtask,
@@ -239,6 +264,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('deploy', "[custom] Deploy to App Engine, specifying either [:staging] or [:production]", function (subtask) {
         subtask = subtask || 'staging';
+        displayTitle('DEPLOYING - '+subtask);
         deploy.deploy(path.resolve(config.build.dir, subtask), config.versions[subtask].appengineappid, 'Deploying to ' + subtask);
     });
 
