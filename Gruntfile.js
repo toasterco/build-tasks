@@ -4,7 +4,7 @@ module.exports = function (grunt) {
     // Config settings
     var config = require('./config');
 
-    var fileBuilder = require('./file-builder');
+    var fileBuilder = require('./build');
     var deploy = require('./deploy');
 
     // Load the all the plugins that Grunt requires

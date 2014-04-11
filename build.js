@@ -159,15 +159,15 @@ function deleteRecursive(path) {
 }
 
 /**
- * Copy all images to specified directory
+ * Copy all folders to specified directory
  *
  * @param  {string} selectedVersion version type, i.e. staging, production, etc.
  *
  */
-function copyImages(selectedVersion) {
+function copyFolders(selectedVersion) {
     grunt.log.writeln('\nCopying images...');
 
-    var toCopy = config.imagesToCopy;
+    var toCopy = config.foldersToCopy;
     toCopy.forEach(function(dir) {
         copy(path.resolve(config.src.dir), config.build.dir + selectedVersion, dir);
     });
@@ -387,7 +387,10 @@ function copyCss (selectedVersion) {
 
 }
 
-
+/**
+ * Main
+ * @param {{}} args
+ */
 function main(args) {
 
     // defaults
@@ -399,9 +402,9 @@ function main(args) {
 
     args = mergeObj(args, defaultArgs);
 
-    var selectedVersion = args.version,
-        compress = args.compress,
-        publicVersion = args.public;
+    var selectedVersion = args.version;
+    var compress = args.compress;
+    var publicVersion = args.public;
 
     grunt.log.writeflags(args);
     grunt.log.writeln();
@@ -411,7 +414,7 @@ function main(args) {
 
     processHTML(selectedVersion, config.versions[selectedVersion], compress);
 
-    copyImages(selectedVersion);
+    copyFolders(selectedVersion);
     copyJs(selectedVersion, compress);
     copyCss(selectedVersion);
 
