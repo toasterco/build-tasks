@@ -165,7 +165,7 @@ function deleteRecursive(path) {
  *
  */
 function copyFolders(selectedVersion) {
-    grunt.log.writeln('\nCopying images...');
+    grunt.log.writeln('\nCopying folders...');
 
     var toCopy = config.foldersToCopy;
     toCopy.forEach(function(dir) {
@@ -196,7 +196,7 @@ function isDir(path) {
 function mkdir(dirName) {
     var dirRoot = path.resolve(dirName + '/../');
     if (!fs.existsSync(dirRoot)) {
-        //console.log(dirRoot, 'does not exist, creating it');
+        if (config.fullBuildLog) grunt.log.ok(dirRoot, 'does not exist, creating it');
         mkdir(dirRoot);
     }
     fs.mkdirSync(dirName);
@@ -290,7 +290,7 @@ function copy(src, dest, item) {
         if (fs.existsSync(srcItem)) {
             var fileContents = fs.readFileSync(srcItem);
             fs.writeFileSync(destItem, fileContents);
-            grunt.log.ok('Copied '+item+' to '+ destItem);
+            if ( config.fullBuildLog ) grunt.log.ok('Copied '+item+' to '+ destItem);
         }
     }
 }

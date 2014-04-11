@@ -43,7 +43,11 @@ var config = {
 
 };
 
-config.debugBuild = false;
+/**
+ * Full Build Log - if set to true there will be more logs when exicuting the build script
+ * @type {boolean}
+ */
+config.fullBuildLog = false;
 config.name = 'AppName';
 config.homepage = '';
 config.author = 'Toaster Ltd';
